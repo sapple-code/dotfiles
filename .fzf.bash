@@ -1,13 +1,4 @@
-# Setup fzf
-# ---------
-if [[ ! "$PATH" == */usr/local/opt/fzf/bin* ]]; then
-  export PATH="${PATH:+${PATH}:}/usr/local/opt/fzf/bin"
+# fzf prints the correct Bash integration for the installed Homebrew prefix.
+if [[ $- == *i* ]] && command -v fzf >/dev/null 2>&1; then
+  eval "$(fzf --bash)"
 fi
-
-# Auto-completion
-# ---------------
-[[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
-
-# Key bindings
-# ------------
-source "/usr/local/opt/fzf/shell/key-bindings.bash"

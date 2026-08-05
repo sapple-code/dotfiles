@@ -1,0 +1,6 @@
+# Keep the Solarized Light look from the previous iTerm2 profile.
+theme = iTerm2 Solarized Light
+
+# These dotfiles are written for Bash. Using it here avoids changing the
+# account-wide login shell just to make Ghostty load them.
+command = /opt/homebrew/bin/bash --login

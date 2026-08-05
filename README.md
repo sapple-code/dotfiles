@@ -1,31 +1,18 @@
-# .dotfiles
+# Dotfiles
 
-A repo to store my dotfiles between macos and linux
+Shared shell and editor configuration for macOS and Debian Linux.
 
-```
-git clone git@github.com:splayemu/dotfiles.git .dotfiles
-```
+## Install
 
-## git-fu
-
-Following this tutorial to maintain dotfiles git repo in a detached working directory:
-
-https://www.electricmonk.nl/log/2015/06/22/keep-your-home-dir-in-git-with-a-detached-working-directory/
-
-This repo ignores everything by default.
-
-### Sync dotfiles
-```
-alias dgit='git --git-dir ~/.dotfiles/.git --work-tree=$HOME'
-alias dotfiles="dgit reset --hard; ./copy-dotfiles.sh"
+```sh
+git clone git@github.com:sapple-code/dotfiles.git ~/dev/dotfiles
+cd ~/dev/dotfiles
+./copy-dotfiles.sh
 ```
 
-Now that bash has all the aliases
-```
-dotfiles
-```
+The installer selects the platform-specific files and copies everything into
+the standard locations under `$HOME`. See [the macOS setup guide](macos-dotfiles/README.md)
+for Homebrew dependencies and application setup.
 
-### Add a file:
-```
-git add -f .dotfile.supercool
-```
+After the shell config is loaded, use `dgit` to run Git commands against this
+checkout and `dotfiles` to re-run the installer.
