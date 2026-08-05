@@ -93,10 +93,6 @@ fi
 # source /home/octopus/.bazel/bin/bazel-complete.bash
 export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 
-if command -v mise >/dev/null 2>&1; then
-    eval "$(mise activate bash)"
-fi
-
 # caps Lock Behavior
 setxkbmap -option 'caps:ctrl_modifier'
 xcape -e 'Caps_Lock=Escape'

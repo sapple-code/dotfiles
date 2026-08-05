@@ -2,6 +2,43 @@
 
 set -euo pipefail
 
+usage() {
+    cat <<'EOF'
+Usage: ./copy-dotfiles.sh [--company | --no-company]
+
+Install shared and platform dotfiles into $HOME.
+
+  --company     Install or update the local company Zsh config from its template.
+  --no-company  Leave the local company Zsh config untouched without prompting.
+  -h, --help    Show this help.
+
+With neither flag, an interactive terminal prompts before installing or
+updating the company config. Non-interactive runs skip it.
+EOF
+}
+
+company_mode="ask"
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --company)
+            company_mode="install"
+            ;;
+        --no-company)
+            company_mode="skip"
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1" >&2
+            usage >&2
+            exit 2
+            ;;
+    esac
+    shift
+done
+
 repo_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 
 install_file() {
@@ -10,6 +47,45 @@ install_file() {
 
     mkdir -p "$(dirname -- "$target")"
     cp -p "$source" "$target"
+}
+
+install_company_config() {
+    local template="$repo_dir/.zshrc.company.zsh.template"
+    local target="$HOME/.zshrc.company.zsh"
+    local answer=""
+
+    case "$company_mode" in
+        install)
+            answer="yes"
+            ;;
+        skip)
+            return
+            ;;
+        ask)
+            if [[ ! -t 0 ]]; then
+                echo "Skipped company config in non-interactive mode; use --company to install it."
+                return
+            fi
+            if [[ -e "$target" ]]; then
+                read -r -p "Update $target from the committed template? [y/N] " answer
+            else
+                read -r -p "Install the optional company Zsh config? [y/N] " answer
+            fi
+            ;;
+    esac
+
+    case "$answer" in
+        y|Y|yes|YES)
+            if [[ -e "$target" ]] && ! cmp -s "$template" "$target"; then
+                local backup_dir="$HOME/.dotfiles-backups/$(date +%Y%m%d-%H%M%S)-company"
+                mkdir -p "$backup_dir"
+                cp -p "$target" "$backup_dir/.zshrc.company.zsh"
+                echo "Backed up the previous company config to $backup_dir"
+            fi
+            install_file "$template" "$target"
+            echo "Installed company config at $target"
+            ;;
+    esac
 }
 
 common_files=(
@@ -60,5 +136,7 @@ case "$(uname -s)" in
         exit 1
         ;;
 esac
+
+install_company_config
 
 echo "Installed dotfiles from $repo_dir"

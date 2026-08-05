@@ -1,0 +1,4 @@
+# Personal tooling that should not be part of the shared shell setup.
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi

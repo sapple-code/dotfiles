@@ -6,7 +6,7 @@
 
 ```sh
 brew tap d12frosted/emacs-plus
-brew install fzf mise multimarkdown reattach-to-user-namespace \
+brew install fzf multimarkdown reattach-to-user-namespace \
   the_silver_searcher tmux
 brew install --cask d12frosted/emacs-plus/emacs-plus-app ghostty \
   karabiner-elements
@@ -29,6 +29,14 @@ Ghostty uses its built-in `iTerm2 Solarized Light` theme and the account login
 shell. Zsh is configured in shared, macOS, and optional private company layers.
 The older Bash files remain for compatibility, but no account-wide `chsh` or
 `/etc/shells` change is required.
+
+The optional company template activates mise when it is installed. Install
+mise separately if you opt into that private layer:
+
+```sh
+brew install mise
+./copy-dotfiles.sh --company
+```
 
 4. Update Finder to show full paths:
 

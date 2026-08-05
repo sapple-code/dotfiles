@@ -335,8 +335,6 @@ you should place your code here."
   ;;  :ensure t
   ;;  :pin melpa-stable)
 
-  ;; Set a global Ruby with `mise use -g ruby@<version>` when needed.
-
   ;; Adds `direnv-mode' and `direnv-allow' which are needed in order to start up
   ;; a Clojure REPL with `cider-jack-in'
   (use-package direnv

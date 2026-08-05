@@ -26,6 +26,17 @@ checkout and `dotfiles` to re-run the installer.
 2. `~/.zshrc.shared.zsh`
 3. `~/.zshrc.company.zsh`, when present
 
-The company file is intentionally local and is never installed or committed,
-so it can safely contain private environment setup and company-specific
-overrides.
+The local company file is intentionally never committed. Its maintained,
+non-secret starting point is `.zshrc.company.zsh.template`, which contains the
+opt-in mise activation. During an interactive install, `copy-dotfiles.sh` asks
+before copying or updating that template as `~/.zshrc.company.zsh`.
+
+For unattended installs, choose explicitly:
+
+```sh
+./copy-dotfiles.sh --company     # install or update the local company file
+./copy-dotfiles.sh --no-company  # leave it untouched
+```
+
+Updating an existing company file requires confirmation (or `--company`) and
+creates a timestamped backup before overwriting it.
