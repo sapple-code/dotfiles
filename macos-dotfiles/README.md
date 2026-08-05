@@ -6,7 +6,7 @@
 
 ```sh
 brew tap d12frosted/emacs-plus
-brew install fzf multimarkdown reattach-to-user-namespace \
+brew install fzf mise multimarkdown reattach-to-user-namespace \
   the_silver_searcher tmux
 brew install --cask d12frosted/emacs-plus/emacs-plus-app ghostty \
   karabiner-elements

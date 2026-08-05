@@ -335,9 +335,7 @@ you should place your code here."
   ;;  :ensure t
   ;;  :pin melpa-stable)
 
-  ;; don't think this worked
-  ;; instead set asdf global ruby to the one you need
-  ;; (setq rbenv-installation-dir "~/.asdf/shims/ruby")
+  ;; Set a global Ruby with `mise use -g ruby@<version>` when needed.
 
   ;; Adds `direnv-mode' and `direnv-allow' which are needed in order to start up
   ;; a Clojure REPL with `cider-jack-in'

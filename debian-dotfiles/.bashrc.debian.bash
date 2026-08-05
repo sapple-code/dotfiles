@@ -89,13 +89,13 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# add basel to path
+# add bazel to path
 # source /home/octopus/.bazel/bin/bazel-complete.bash
-export PATH="$PATH:$HOME/bin"
+export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 
-# ASDF Install
-. $HOME/.asdf/asdf.sh
-. $HOME/.asdf/completions/asdf.bash
+if command -v mise >/dev/null 2>&1; then
+    eval "$(mise activate bash)"
+fi
 
 # caps Lock Behavior
 setxkbmap -option 'caps:ctrl_modifier'
