@@ -25,9 +25,9 @@ The installer copies the shared and macOS-specific files, including the Emacs,
 Ghostty, tmux, and Karabiner configurations, into the standard locations under
 your home directory.
 
-Ghostty uses its built-in `iTerm2 Solarized Light` theme and starts Homebrew
-Bash as a login shell, so no account-wide `chsh` or `/etc/shells` change is
-required.
+Ghostty uses its built-in `iTerm2 Solarized Light` theme and the account login
+shell. The installer includes equivalent Bash and Zsh configuration, so no
+account-wide `chsh` or `/etc/shells` change is required.
 
 4. Update Finder to show full paths:
 

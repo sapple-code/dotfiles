@@ -24,6 +24,7 @@ common_files=(
     .gitconfig
     .gitignore_global
     .vimrc
+    .zshrc
 )
 
 for file in "${common_files[@]}"; do

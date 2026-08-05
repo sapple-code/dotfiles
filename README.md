@@ -1,6 +1,6 @@
 # Dotfiles
 
-Shared shell and editor configuration for macOS and Debian Linux.
+Shared Bash, Zsh, and editor configuration for macOS and Debian Linux.
 
 ## Install
 
