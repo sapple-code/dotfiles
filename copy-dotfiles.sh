@@ -25,6 +25,7 @@ common_files=(
     .gitignore_global
     .vimrc
     .zshrc
+    .zshrc.shared.zsh
 )
 
 for file in "${common_files[@]}"; do
@@ -37,6 +38,7 @@ cp -Rp "$repo_dir/z/." "$HOME/z/"
 case "$(uname -s)" in
     Darwin)
         install_file "$repo_dir/macos-dotfiles/.bashrc.macos.bash" "$HOME/.bashrc.macos.bash"
+        install_file "$repo_dir/macos-dotfiles/.zshrc.macos.zsh" "$HOME/.zshrc.macos.zsh"
         install_file "$repo_dir/macos-dotfiles/.spacemacs" "$HOME/.spacemacs"
         install_file "$repo_dir/macos-dotfiles/.tmux.conf" "$HOME/.tmux.conf"
         install_file "$repo_dir/macos-dotfiles/bin/ec" "$HOME/bin/ec"
@@ -48,6 +50,7 @@ case "$(uname -s)" in
         ;;
     Linux)
         install_file "$repo_dir/debian-dotfiles/.bashrc.debian.bash" "$HOME/.bashrc.debian.bash"
+        install_file "$repo_dir/debian-dotfiles/.zshrc.debian.zsh" "$HOME/.zshrc.debian.zsh"
         install_file "$repo_dir/debian-dotfiles/.spacemacs" "$HOME/.spacemacs"
         install_file "$repo_dir/debian-dotfiles/.tmux.conf" "$HOME/.tmux.conf"
         install_file "$repo_dir/debian-dotfiles/.emacs.d/init.el" "$HOME/.emacs.d/init.el"

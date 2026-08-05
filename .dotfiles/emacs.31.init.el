@@ -9,17 +9,19 @@
   (interactive)
   (find-file-other-window user-init-file))
 
-(defun open-bashrc-interactive (&optional arg)
-  "Open a bashrc file interactively, with options for macos, shared, or company."
+(defun open-zshrc-interactive (&optional arg)
+  "Open a Zsh config file interactively."
   (interactive
    (list
-    (completing-read "Select bashrc file: "
-                     '("macos" "shared" "company")
+    (completing-read "Select Zsh config: "
+                     '("main" "macos" "shared" "company" "debian")
                      nil t)))
   (let ((file (cdr (assoc arg
-                           '(("macos" . "~/.bashrc.macos.bash")
-                             ("shared" . "~/.bashrc.shared.bash")
-                             ("company" . "~/.bashrc.company.bash"))))))
+                           '(("main" . "~/.zshrc")
+                             ("macos" . "~/.zshrc.macos.zsh")
+                             ("shared" . "~/.zshrc.shared.zsh")
+                             ("company" . "~/.zshrc.company.zsh")
+                             ("debian" . "~/.zshrc.debian.zsh"))))))
     (find-file-other-window file)))
 
 (defun cust-switch-to-previous-buffer ()
@@ -60,10 +62,10 @@ or the current buffer directory."
           (kill-new file-name))
       (error "Buffer not visiting a file"))))
 
-(let ((homebrew-bash "/opt/homebrew/bin/bash"))
-  (when (file-executable-p homebrew-bash)
-    (setenv "SHELL" homebrew-bash)
-    (setq shell-file-name homebrew-bash)))
+(let ((zsh (executable-find "zsh")))
+  (when zsh
+    (setenv "SHELL" zsh)
+    (setq shell-file-name zsh)))
 
 (defun set-exec-path-from-shell-PATH ()
   "Set up Emacs' `exec-path' and PATH environment variable to match
@@ -467,7 +469,7 @@ apps are not started from a shell."
   ;; Others
   "at"  '(ansi-term :which-key "open terminal")
   "fd"  '(cust-find-user-init-file :which-key "open init.el")
-  "fb"  '(open-bashrc-interactive :which-key "open bashrc")
+  "fz"  '(open-zshrc-interactive :which-key "open Zsh config")
   "fy"  '(camdez/show-buffer-file-name :which-key "copy path of buffer to clipboard")
   "gl"  '(git-link :which-key "open code in github")
   ;; projectile

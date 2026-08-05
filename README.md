@@ -1,6 +1,7 @@
 # Dotfiles
 
-Shared Bash, Zsh, and editor configuration for macOS and Debian Linux.
+Zsh and editor configuration for macOS and Debian Linux. The older Bash files
+remain available for compatibility.
 
 ## Install
 
@@ -16,3 +17,15 @@ for Homebrew dependencies and application setup.
 
 After the shell config is loaded, use `dgit` to run Git commands against this
 checkout and `dotfiles` to re-run the installer.
+
+## Zsh configuration layers
+
+`~/.zshrc` loads configuration in this order:
+
+1. `~/.zshrc.macos.zsh` or `~/.zshrc.debian.zsh`
+2. `~/.zshrc.shared.zsh`
+3. `~/.zshrc.company.zsh`, when present
+
+The company file is intentionally local and is never installed or committed,
+so it can safely contain private environment setup and company-specific
+overrides.
