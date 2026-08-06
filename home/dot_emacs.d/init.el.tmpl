@@ -1,0 +1,5 @@
+{{- if eq .chezmoi.os "darwin" -}}
+{{ template "emacs.init.darwin.el" . }}
+{{- else if eq .chezmoi.os "linux" -}}
+{{ template "emacs.init.linux.el" . }}
+{{- end -}}

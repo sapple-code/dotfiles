@@ -16,6 +16,8 @@ esac
 
 [[ -r "$HOME/.zshrc.shared.zsh" ]] && source "$HOME/.zshrc.shared.zsh"
 
-# This file stays local so company credentials and overrides are never
-# committed or overwritten by the dotfiles installer.
+{{- if .company }}
+# Chezmoi creates this optional layer only on machines where it is enabled.
+# Keep credentials in a secret manager or an untracked file, not this layer.
 [[ -r "$HOME/.zshrc.company.zsh" ]] && source "$HOME/.zshrc.company.zsh"
+{{- end }}

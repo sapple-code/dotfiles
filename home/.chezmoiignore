@@ -1,0 +1,19 @@
+{{ if not .company -}}
+.zshrc.company.zsh
+{{ end -}}
+
+{{ if ne .chezmoi.os "darwin" -}}
+.Brewfile
+.bashrc.macos.bash
+.zshrc.macos.zsh
+Library
+.config/karabiner
+bin/ec
+bin/emacs
+bin/emacsserver
+{{ end -}}
+
+{{ if ne .chezmoi.os "linux" -}}
+.bashrc.debian.bash
+.zshrc.debian.zsh
+{{ end -}}

@@ -1,0 +1,5 @@
+{{- if eq .chezmoi.os "darwin" -}}
+{{ template "spacemacs.darwin" . }}
+{{- else if eq .chezmoi.os "linux" -}}
+{{ template "spacemacs.linux" . }}
+{{- end -}}

@@ -1,0 +1,28 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/sh
+# Brewfile: {{ includeTemplate "Brewfile" . | sha256sum }}
+set -eu
+
+if ! command -v brew >/dev/null 2>&1; then
+    echo "Homebrew is required; install it from https://brew.sh and run chezmoi apply again." >&2
+    exit 1
+fi
+
+brew bundle --global
+{{- else if eq .chezmoi.os "linux" -}}
+#!/bin/sh
+# Packages: {{ includeTemplate "debian-packages" . | sha256sum }}
+set -u
+
+if ! command -v apt-get >/dev/null 2>&1; then
+    echo "Skipping packages: this best-effort Linux setup currently supports apt-get." >&2
+    exit 0
+fi
+
+packages='{{ template "debian-packages" . }}'
+# Word splitting turns the maintained newline-delimited list into apt arguments.
+# shellcheck disable=SC2086
+if ! sudo apt-get update || ! sudo apt-get install -y $packages; then
+    echo "Warning: Debian package installation was incomplete; dotfiles were still applied." >&2
+fi
+{{- end }}

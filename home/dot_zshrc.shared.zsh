@@ -1,10 +1,6 @@
 [[ -r "$HOME/.local/bin/env" ]] && source "$HOME/.local/bin/env"
 export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 
-export DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dev/dotfiles}"
-alias dgit='git -C "$DOTFILES_DIR"'
-alias dotfiles='"$DOTFILES_DIR"/copy-dotfiles.sh'
-
 tmux() {
   if [[ ! -d "${PWD:-}" ]]; then
     print -u2 "tmux: current directory no longer exists; moving to $HOME"
