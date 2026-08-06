@@ -145,6 +145,13 @@ apps are not started from a shell."
   ;; Enable use-package :ensure support for Elpaca.
   (elpaca-use-package-mode))
 
+;; Emacs 30 bundles transient 0.7.2.2, but gptel requires 0.7.8 or newer.
+;; Install and load the current package before anything can select the bundled
+;; copy from the Emacs application.
+(use-package transient
+  :ensure (:wait t)
+  :demand t)
+
 
 ;; *******
 ;; END elpaca package manager
