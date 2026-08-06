@@ -1,0 +1,3 @@
+{{- $company := promptBoolOnce . "company" "Enable the optional personal/company configuration" false -}}
+[data]
+    company = {{ $company }}

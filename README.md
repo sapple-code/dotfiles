@@ -1,42 +1,53 @@
 # Dotfiles
 
-Zsh and editor configuration for macOS and Debian Linux. The older Bash files
-remain available for compatibility.
+Chezmoi-managed Zsh, editor, terminal, and compatibility Bash configuration
+for macOS and Debian Linux.
 
 ## Install
 
+On macOS, install Homebrew first, then run:
+
 ```sh
-git clone git@github.com:sapple-code/dotfiles.git ~/dev/dotfiles
-cd ~/dev/dotfiles
-./copy-dotfiles.sh
+brew install chezmoi
+chezmoi init --apply sapple-code
 ```
 
-The installer selects the platform-specific files and copies everything into
-the standard locations under `$HOME`. See [the macOS setup guide](macos-dotfiles/README.md)
-for Homebrew dependencies and application setup.
+Chezmoi asks whether to enable the optional personal/company layer. That layer
+activates mise and causes mise to be installed on macOS. It is disabled by
+default and its generated file must not contain credentials.
 
-After the shell config is loaded, use `dgit` to run Git commands against this
-checkout and `dotfiles` to re-run the installer.
+See [the macOS guide](docs/macos.md) or [the Debian guide](docs/debian.md) for
+platform details.
 
-## Zsh configuration layers
+## Daily commands
+
+```sh
+chezmoi diff                         # preview unapplied changes
+chezmoi apply                        # apply the source state
+chezmoi edit --apply ~/.zshrc        # edit one source file and apply it
+chezmoi update                       # pull, then apply
+chezmoi git -- status                # run Git in the source repository
+chezmoi cd                           # open a shell in the source repository
+```
+
+The repository uses `.chezmoiroot` so documentation remains at the repository
+root while the managed source state lives under `home/`.
+
+## Zsh layers
 
 `~/.zshrc` loads configuration in this order:
 
 1. `~/.zshrc.macos.zsh` or `~/.zshrc.debian.zsh`
 2. `~/.zshrc.shared.zsh`
-3. `~/.zshrc.company.zsh`, when present
+3. `~/.zshrc.company.zsh`, when enabled during `chezmoi init`
 
-The local company file is intentionally never committed. Its maintained,
-non-secret starting point is `.zshrc.company.zsh.template`, which contains the
-opt-in mise activation. During an interactive install, `copy-dotfiles.sh` asks
-before copying or updating that template as `~/.zshrc.company.zsh`.
+Machine choices are stored in the local chezmoi configuration, not committed
+to this repository. To change the company choice, edit `data.company` in
+`~/.config/chezmoi/chezmoi.toml` and run `chezmoi apply`.
 
-For unattended installs, choose explicitly:
+## Packages
 
-```sh
-./copy-dotfiles.sh --company     # install or update the local company file
-./copy-dotfiles.sh --no-company  # leave it untouched
-```
-
-Updating an existing company file requires confirmation (or `--company`) and
-creates a timestamped backup before overwriting it.
+On macOS, chezmoi renders `~/.Brewfile` and runs `brew bundle --global` whenever
+that manifest changes. On Linux, a best-effort apt script installs the shell,
+editor, tmux, clipboard, search, and Git dependencies. Unsupported Linux
+distributions still receive the dotfiles but skip package installation.
