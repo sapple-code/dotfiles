@@ -5,6 +5,14 @@ export DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dev/dotfiles}"
 alias dgit='git -C "$DOTFILES_DIR"'
 alias dotfiles='"$DOTFILES_DIR"/copy-dotfiles.sh'
 
+tmux() {
+  if [[ ! -d "${PWD:-}" ]]; then
+    print -u2 "tmux: current directory no longer exists; moving to $HOME"
+    builtin cd "$HOME" || return 1
+  fi
+  command tmux "$@"
+}
+
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=100000
 export SAVEHIST=100000
