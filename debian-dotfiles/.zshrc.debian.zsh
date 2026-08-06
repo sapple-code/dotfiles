@@ -14,4 +14,3 @@ fi
 
 alias pbcopy='xclip -selection clipboard -in'
 alias pbpaste='xclip -selection clipboard -out'
-alias dokku='ssh -t dokku@159.65.67.95'
