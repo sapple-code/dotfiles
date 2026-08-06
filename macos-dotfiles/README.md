@@ -1,87 +1,57 @@
-## Computer Setup for MacOS
+## Computer setup for macOS
 
-1. Install xcode from Apple Store
-2. Install iterm2
-3. Install homebrew: https://brew.sh/
-4. Install karabiner-elements
+1. Install the Xcode Command Line Tools and [Homebrew](https://brew.sh/).
 
-After installing karabiner-elements, install the config `./karabiner.json`
-```
-mv ~/.dotfiles/macos-dotfiles/karabiner.json ~/.config/karabiner/
-```
+2. Install the terminal, editor, and command-line dependencies:
 
-5. Create and install personal access token for github. See: https://gist.github.com/jonjack/bf295d4170edeb00e96fb158f9b1ba3c
-6. Install emacs 28
-```
+```sh
 brew tap d12frosted/emacs-plus
-brew install emacs-plus@28
-```
-Find emacs install location (depends on M1/intel/version of homebrew). 
-First look for where emacs is installed. 
-Then check where the symlink points to which is where emacs is actually installed.
-```
-which emacs
-ls -ltr ls -ltr /usr/local/bin/
+brew install fzf multimarkdown reattach-to-user-namespace \
+  the_silver_searcher tmux
+brew install --cask d12frosted/emacs-plus/emacs-plus-app ghostty \
+  karabiner-elements
 ```
 
-Add symlink for emacs
-```
-ln -s /opt/homebrew/Cellar/emacs-plus@28/28.1/Emacs.app /Applications/Emacs.app
-```
-Old way: https://emacsformacosx.com/
+Emacs Plus tracks the latest stable Emacs release and installs `Emacs.app`
+directly into `/Applications`.
 
-7. Install tmux
-See https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard/
+3. Copy the dotfiles from the repository root:
 
-```
-brew install reattach-to-user-namespace tmux
+```sh
+./copy-dotfiles.sh
 ```
 
-8. Install fzf
-```
-brew install fzf
-```
+The installer copies the shared and macOS-specific files, including the Emacs,
+Ghostty, tmux, and Karabiner configurations, into the standard locations under
+your home directory. On macOS, Ghostty reads its configuration from
+`~/Library/Application Support/com.mitchellh.ghostty/config`.
 
-8. Install 'Solarized Light' theme for iterm2
-Open `iterm-theme/solarized_light.itermcolors` in iterm2. 
-![iterm2_color_preferences](https://user-images.githubusercontent.com/1490056/168616987-d5a7fd88-5f0e-43e3-9164-3eba64e4aeb4.png)
+Ghostty uses its built-in `iTerm2 Solarized Light` theme and the account login
+shell. Zsh is configured in shared, macOS, and optional private company layers.
+The older Bash files remain for compatibility, but no account-wide `chsh` or
+`/etc/shells` change is required.
 
-9. Update finder to show full paths
-```
-defaults write com.apple.finder _FXShowPosixPathInTitle -bool true; killall Finder
-```
+The optional company template activates mise when it is installed. Install
+mise separately if you opt into that private layer:
 
-10. Install mission control commands
-
-![mission_control_config.png](mission_control_config.png)
-
-11. Update bash
-
-https://itnext.io/upgrading-bash-on-macos-7138bd1066ba
-
-12. Set bash as default shell
-
-a. Find bash:
-```
-$ which bash
-/opt/homebrew/bin/bash
+```sh
+brew install mise
+./copy-dotfiles.sh --company
 ```
 
-b. Add bash to `/etc/shells`
-```
-sudo su -
-echo /opt/homebrew/bin/bash >> /etc/shells
-exit
+4. Update Finder to show full paths:
+
+```sh
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+killall Finder
 ```
 
-c. Update the shell for the user
-```
-chsh -s /opt/homebrew/bin/bash
-```
+5. Apply the Mission Control shortcuts shown in
+`mission_control_config.png`.
 
-## Emacs Shit
-Followed this [client server setup](https://www.hhyu.org/posts/emacs_clientserver/).
+## Emacs client/server setup
 
-1. Created the scripts `bin/emacsserver` and `bin/ec`
-2. `emacsserver` finds the currently running server
-3. `ec` tries to connect to the server or starts a new server
+This follows the [client/server setup described here](https://www.hhyu.org/posts/emacs_clientserver/).
+
+- `bin/emacsserver` finds the currently running server.
+- `bin/ec` connects to that server or starts a new one.

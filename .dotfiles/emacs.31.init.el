@@ -9,17 +9,19 @@
   (interactive)
   (find-file-other-window user-init-file))
 
-(defun open-bashrc-interactive (&optional arg)
-  "Open a bashrc file interactively, with options for macos, shared, or company."
+(defun open-zshrc-interactive (&optional arg)
+  "Open a Zsh config file interactively."
   (interactive
    (list
-    (completing-read "Select bashrc file: "
-                     '("macos" "shared" "company")
+    (completing-read "Select Zsh config: "
+                     '("main" "macos" "shared" "company" "debian")
                      nil t)))
   (let ((file (cdr (assoc arg
-                           '(("macos" . "~/.bashrc.macos.bash")
-                             ("shared" . "~/.bashrc.shared.bash")
-                             ("company" . "~/.bashrc.company.bash"))))))
+                           '(("main" . "~/.zshrc")
+                             ("macos" . "~/.zshrc.macos.zsh")
+                             ("shared" . "~/.zshrc.shared.zsh")
+                             ("company" . "~/.zshrc.company.zsh")
+                             ("debian" . "~/.zshrc.debian.zsh"))))))
     (find-file-other-window file)))
 
 (defun cust-switch-to-previous-buffer ()
@@ -60,7 +62,10 @@ or the current buffer directory."
           (kill-new file-name))
       (error "Buffer not visiting a file"))))
 
-(setenv "SHELL" "/opt/homebrew/Cellar/bash/5.2.37/bin/bash")
+(let ((zsh (executable-find "zsh")))
+  (when zsh
+    (setenv "SHELL" zsh)
+    (setq shell-file-name zsh)))
 
 (defun set-exec-path-from-shell-PATH ()
   "Set up Emacs' `exec-path' and PATH environment variable to match
@@ -96,22 +101,22 @@ apps are not started from a shell."
 
 (setq package-enable-at-startup nil)
 
-(defvar elpaca-installer-version 0.9)
+(defvar elpaca-installer-version 0.12)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+(defvar elpaca-sources-directory (expand-file-name "sources/" elpaca-directory))
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
                               :ref nil :depth 1 :inherit ignore
                               :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                              :build (:not elpaca--activate-package)))
-(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+                              :build (:not elpaca-activate)))
+(let* ((repo  (expand-file-name "elpaca/" elpaca-sources-directory))
        (build (expand-file-name "elpaca/" elpaca-builds-directory))
        (order (cdr elpaca-order))
        (default-directory repo))
   (add-to-list 'load-path (if (file-exists-p build) build repo))
   (unless (file-exists-p repo)
     (make-directory repo t)
-    (when (< emacs-major-version 28) (require 'subr-x))
+    (when (<= emacs-major-version 28) (require 'subr-x))
     (condition-case-unless-debug err
         (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
                   ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
@@ -131,7 +136,7 @@ apps are not started from a shell."
   (unless (require 'elpaca-autoloads nil t)
     (require 'elpaca)
     (elpaca-generate-autoloads "elpaca" repo)
-    (load "./elpaca-autoloads")))
+    (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
@@ -139,6 +144,13 @@ apps are not started from a shell."
 (elpaca elpaca-use-package
   ;; Enable use-package :ensure support for Elpaca.
   (elpaca-use-package-mode))
+
+;; Emacs 30 bundles transient 0.7.2.2, but gptel requires 0.7.8 or newer.
+;; Install and load the current package before anything can select the bundled
+;; copy from the Emacs application.
+(use-package transient
+  :ensure (:wait t)
+  :demand t)
 
 
 ;; *******
@@ -418,13 +430,14 @@ apps are not started from a shell."
 ;; ******
 
 (use-package gptel
-  :ensure (:wait t))
-
-(setq
- gptel-model 'gemini-2.0-flash
- gptel-backend (gptel-make-gemini "Gemini"
-                 :key "AIzaSyBPhzwqm6X191SqS16yhVNIEJ1L6Oxx--U"
-                 :stream t))
+  :ensure (:wait t)
+  :demand t
+  :config
+  (when-let ((gemini-api-key (getenv "GEMINI_API_KEY")))
+    (setq gptel-model 'gemini-2.0-flash
+          gptel-backend (gptel-make-gemini "Gemini"
+                          :key gemini-api-key
+                          :stream t))))
 
 
 ;; ******
@@ -463,7 +476,7 @@ apps are not started from a shell."
   ;; Others
   "at"  '(ansi-term :which-key "open terminal")
   "fd"  '(cust-find-user-init-file :which-key "open init.el")
-  "fb"  '(open-bashrc-interactive :which-key "open bashrc")
+  "fz"  '(open-zshrc-interactive :which-key "open Zsh config")
   "fy"  '(camdez/show-buffer-file-name :which-key "copy path of buffer to clipboard")
   "gl"  '(git-link :which-key "open code in github")
   ;; projectile

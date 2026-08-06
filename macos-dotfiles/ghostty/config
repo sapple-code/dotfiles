@@ -1,0 +1,4 @@
+# Keep the Solarized Light look from the previous iTerm2 profile.
+theme = iTerm2 Solarized Light
+
+# Use the account login shell. On macOS this loads the installed .zshrc.

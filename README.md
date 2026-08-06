@@ -1,31 +1,42 @@
-# .dotfiles
+# Dotfiles
 
-A repo to store my dotfiles between macos and linux
+Zsh and editor configuration for macOS and Debian Linux. The older Bash files
+remain available for compatibility.
 
-```
-git clone git@github.com:splayemu/dotfiles.git .dotfiles
-```
+## Install
 
-## git-fu
-
-Following this tutorial to maintain dotfiles git repo in a detached working directory:
-
-https://www.electricmonk.nl/log/2015/06/22/keep-your-home-dir-in-git-with-a-detached-working-directory/
-
-This repo ignores everything by default.
-
-### Sync dotfiles
-```
-alias dgit='git --git-dir ~/.dotfiles/.git --work-tree=$HOME'
-alias dotfiles="dgit reset --hard; ./copy-dotfiles.sh"
+```sh
+git clone git@github.com:sapple-code/dotfiles.git ~/dev/dotfiles
+cd ~/dev/dotfiles
+./copy-dotfiles.sh
 ```
 
-Now that bash has all the aliases
-```
-dotfiles
+The installer selects the platform-specific files and copies everything into
+the standard locations under `$HOME`. See [the macOS setup guide](macos-dotfiles/README.md)
+for Homebrew dependencies and application setup.
+
+After the shell config is loaded, use `dgit` to run Git commands against this
+checkout and `dotfiles` to re-run the installer.
+
+## Zsh configuration layers
+
+`~/.zshrc` loads configuration in this order:
+
+1. `~/.zshrc.macos.zsh` or `~/.zshrc.debian.zsh`
+2. `~/.zshrc.shared.zsh`
+3. `~/.zshrc.company.zsh`, when present
+
+The local company file is intentionally never committed. Its maintained,
+non-secret starting point is `.zshrc.company.zsh.template`, which contains the
+opt-in mise activation. During an interactive install, `copy-dotfiles.sh` asks
+before copying or updating that template as `~/.zshrc.company.zsh`.
+
+For unattended installs, choose explicitly:
+
+```sh
+./copy-dotfiles.sh --company     # install or update the local company file
+./copy-dotfiles.sh --no-company  # leave it untouched
 ```
 
-### Add a file:
-```
-git add -f .dotfile.supercool
-```
+Updating an existing company file requires confirmation (or `--company`) and
+creates a timestamped backup before overwriting it.

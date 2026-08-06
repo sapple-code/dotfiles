@@ -89,13 +89,9 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# add basel to path
+# add bazel to path
 # source /home/octopus/.bazel/bin/bazel-complete.bash
-export PATH="$PATH:$HOME/bin"
-
-# ASDF Install
-. $HOME/.asdf/asdf.sh
-. $HOME/.asdf/completions/asdf.bash
+export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 
 # caps Lock Behavior
 setxkbmap -option 'caps:ctrl_modifier'
@@ -104,8 +100,5 @@ xcape -e 'Caps_Lock=Escape'
 # copy paste into system clipboard
 alias "pbcopy=xclip -sel clip -i"
 alias "pbpaste=xclip -o"
-
-# dokku
-alias "dokku=ssh -t dokku@159.65.67.95"
 
 echo "Sourced .bashrc.debian.bash"
