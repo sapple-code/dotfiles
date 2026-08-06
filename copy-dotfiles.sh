@@ -121,7 +121,8 @@ case "$(uname -s)" in
         install_file "$repo_dir/macos-dotfiles/bin/emacs" "$HOME/bin/emacs"
         install_file "$repo_dir/macos-dotfiles/bin/emacsserver" "$HOME/bin/emacsserver"
         install_file "$repo_dir/.dotfiles/emacs.31.init.el" "$HOME/.emacs.d/init.el"
-        install_file "$repo_dir/macos-dotfiles/ghostty/config" "$HOME/.config/ghostty/config"
+        install_file "$repo_dir/macos-dotfiles/ghostty/config" \
+            "$HOME/Library/Application Support/com.mitchellh.ghostty/config"
         install_file "$repo_dir/macos-dotfiles/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
         ;;
     Linux)

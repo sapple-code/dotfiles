@@ -23,7 +23,8 @@ directly into `/Applications`.
 
 The installer copies the shared and macOS-specific files, including the Emacs,
 Ghostty, tmux, and Karabiner configurations, into the standard locations under
-your home directory.
+your home directory. On macOS, Ghostty reads its configuration from
+`~/Library/Application Support/com.mitchellh.ghostty/config`.
 
 Ghostty uses its built-in `iTerm2 Solarized Light` theme and the account login
 shell. Zsh is configured in shared, macOS, and optional private company layers.
