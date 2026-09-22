@@ -12,12 +12,16 @@ brew install chezmoi
 chezmoi init --apply sapple-code
 ```
 
-Chezmoi asks whether to enable the optional personal/company layer. That layer
-activates mise and causes mise to be installed on macOS. It is disabled by
-default and its generated file must not contain credentials.
+Chezmoi asks whether to enable the optional personal/company layer and which AI
+applications to install on that computer. Pi is enabled by default; Pi Web UI
+can be selected with it; Oh My Pi defaults off so it must be explicitly allowed.
+The generated configuration must not contain credentials.
 
 See [the macOS guide](docs/macos.md) or [the Debian guide](docs/debian.md) for
 platform details.
+
+The Pi, Oh My Pi, Codex handoff, voice, background-task, and mobile setup is
+documented in [the AI stack guide](docs/ai-stack.md).
 
 ## Daily commands
 
@@ -43,11 +47,15 @@ root while the managed source state lives under `home/`.
 
 Machine choices are stored in the local chezmoi configuration, not committed
 to this repository. To change the company choice, edit `data.company` in
-`~/.config/chezmoi/chezmoi.toml` and run `chezmoi apply`.
+`~/.config/chezmoi/chezmoi.toml` and run `chezmoi apply`. The same `[data]`
+section stores `installPi`, `installPiWebUi`, and `installOhMyPi`; rerun
+`chezmoi init --prompt` to choose them interactively.
 
 ## Packages
 
 On macOS, chezmoi renders `~/.Brewfile` and runs `brew bundle --global` whenever
 that manifest changes. On Linux, a best-effort apt script installs the shell,
-editor, tmux, clipboard, search, and Git dependencies. Unsupported Linux
-distributions still receive the dotfiles but skip package installation.
+editor, tmux, clipboard, search, media, and Git dependencies. A second script
+installs the selected pinned AI tools through mise on both platforms.
+Unsupported Linux distributions still receive the dotfiles but skip system
+package installation.

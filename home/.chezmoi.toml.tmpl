@@ -1,3 +1,12 @@
 {{- $company := promptBoolOnce . "company" "Enable the optional personal/company configuration" false -}}
+{{- $installPi := promptBoolOnce . "installPi" "Install Pi and its managed packages" true -}}
+{{- $installPiWebUi := false -}}
+{{- if $installPi -}}
+{{-   $installPiWebUi = promptBoolOnce . "installPiWebUi" "Install Pi Web UI and its voice plugin" true -}}
+{{- end -}}
+{{- $installOhMyPi := promptBoolOnce . "installOhMyPi" "Install Oh My Pi (verify that it is permitted on this computer)" false -}}
 [data]
     company = {{ $company }}
+    installPi = {{ $installPi }}
+    installPiWebUi = {{ $installPiWebUi }}
+    installOhMyPi = {{ $installOhMyPi }}

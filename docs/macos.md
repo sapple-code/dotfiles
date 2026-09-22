@@ -12,8 +12,9 @@ chezmoi init --apply sapple-code
 Chezmoi installs the managed files and runs the rendered `~/.Brewfile`. The
 manifest supports both Apple Silicon and Intel Homebrew installations and
 includes Emacs Plus, Ghostty, Karabiner-Elements, tmux, fzf, Silver Searcher,
-and the remaining command-line dependencies. Mise is included only when the
-optional personal/company layer is enabled.
+`fd`, and the remaining command-line dependencies. Mise is shared because it
+installs the selected pinned Pi, Oh My Pi, and pi-web-ui tools described in
+[`ai-stack.md`](ai-stack.md).
 
 Ghostty reads its Solarized Light configuration from:
 

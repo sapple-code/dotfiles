@@ -2,6 +2,14 @@
 .zshrc.company.zsh
 {{ end -}}
 
+{{- $installPi := true -}}
+{{- if hasKey . "installPi" -}}
+{{-   $installPi = .installPi -}}
+{{- end -}}
+{{ if or (ne .chezmoi.os "linux") (not $installPi) -}}
+bin/fd
+{{ end -}}
+
 {{ if ne .chezmoi.os "darwin" -}}
 .Brewfile
 .bashrc.macos.bash

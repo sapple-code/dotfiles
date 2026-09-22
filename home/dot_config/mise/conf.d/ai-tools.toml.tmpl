@@ -1,0 +1,25 @@
+{{- $installPi := true -}}
+{{- if hasKey . "installPi" -}}
+{{-   $installPi = .installPi -}}
+{{- end -}}
+{{- $installPiWebUi := $installPi -}}
+{{- if hasKey . "installPiWebUi" -}}
+{{-   $installPiWebUi = and $installPi .installPiWebUi -}}
+{{- end -}}
+{{- $installOhMyPi := false -}}
+{{- if hasKey . "installOhMyPi" -}}
+{{-   $installOhMyPi = .installOhMyPi -}}
+{{- end -}}
+[tools]
+{{ if or $installPi $installPiWebUi -}}
+node = "22.22.2"
+{{ end -}}
+{{ if $installPi -}}
+"npm:@earendil-works/pi-coding-agent" = "0.87.1"
+{{ end -}}
+{{ if $installPiWebUi -}}
+"npm:pi-web-ui" = { version = "0.94.1", allow_builds = ["node-pty"] }
+{{ end -}}
+{{ if $installOhMyPi -}}
+"github:can1357/oh-my-pi" = "18.2.8"
+{{ end -}}
