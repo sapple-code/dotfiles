@@ -1,4 +1,2 @@
-# Personal tooling that should not be part of the shared shell setup.
-if command -v mise >/dev/null 2>&1; then
-  eval "$(mise activate zsh)"
-fi
+# Machine-local work settings belong here. Keep credentials and provider-specific
+# hooks in untracked files or a secret manager.

@@ -1,7 +1,9 @@
 curl
 emacs
+ffmpeg
 fzf
 git
+jq
 silversearcher-ag
 tmux
 xclip

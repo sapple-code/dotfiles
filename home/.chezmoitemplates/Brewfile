@@ -1,5 +1,8 @@
 brew "chezmoi"
+brew "ffmpeg"
 brew "fzf"
+brew "jq"
+brew "mise"
 brew "multimarkdown"
 brew "reattach-to-user-namespace"
 brew "the_silver_searcher"
@@ -9,7 +12,3 @@ tap "d12frosted/emacs-plus"
 cask "d12frosted/emacs-plus/emacs-plus-app"
 cask "ghostty" unless File.exist?("/Applications/Ghostty.app")
 cask "karabiner-elements" unless File.exist?("/Applications/Karabiner-Elements.app")
-
-{{- if .company }}
-brew "mise"
-{{- end }}

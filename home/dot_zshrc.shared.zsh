@@ -1,6 +1,17 @@
 [[ -r "$HOME/.local/bin/env" ]] && source "$HOME/.local/bin/env"
 export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 
+_mise_bin="$(command -v mise 2>/dev/null || true)"
+for _mise_candidate in /opt/homebrew/bin/mise /usr/local/bin/mise; do
+  if [[ -z "$_mise_bin" && -x "$_mise_candidate" ]]; then
+    _mise_bin="$_mise_candidate"
+  fi
+done
+if [[ -n "$_mise_bin" ]]; then
+  eval "$("$_mise_bin" activate zsh)"
+fi
+unset _mise_bin _mise_candidate
+
 tmux() {
   if [[ ! -d "${PWD:-}" ]]; then
     print -u2 "tmux: current directory no longer exists; moving to $HOME"

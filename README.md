@@ -12,12 +12,16 @@ brew install chezmoi
 chezmoi init --apply sapple-code
 ```
 
-Chezmoi asks whether to enable the optional personal/company layer. That layer
-activates mise and causes mise to be installed on macOS. It is disabled by
-default and its generated file must not contain credentials.
+Chezmoi asks whether to enable the optional personal/company layer. It is
+disabled by default and its generated file must not contain credentials.
+Mise is part of the shared layer because it installs the pinned AI command-line
+stack on every computer.
 
 See [the macOS guide](docs/macos.md) or [the Debian guide](docs/debian.md) for
 platform details.
+
+The Pi, Oh My Pi, Codex handoff, voice, background-task, and mobile setup is
+documented in [the AI stack guide](docs/ai-stack.md).
 
 ## Daily commands
 
@@ -49,5 +53,6 @@ to this repository. To change the company choice, edit `data.company` in
 
 On macOS, chezmoi renders `~/.Brewfile` and runs `brew bundle --global` whenever
 that manifest changes. On Linux, a best-effort apt script installs the shell,
-editor, tmux, clipboard, search, and Git dependencies. Unsupported Linux
-distributions still receive the dotfiles but skip package installation.
+editor, tmux, clipboard, search, media, and Git dependencies. A second script
+installs the pinned AI tools through mise on both platforms. Unsupported Linux
+distributions still receive the dotfiles but skip system package installation.

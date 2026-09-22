@@ -1,0 +1,31 @@
+#!/bin/sh
+# Tools: {{ include "dot_config/mise/conf.d/ai-tools.toml" | sha256sum }}
+# Pi packages: {{ include "dot_config/ai-stack/pi-packages.txt" | sha256sum }}
+set -eu
+
+export PATH="$HOME/.local/bin:$PATH"
+
+if ! command -v mise >/dev/null 2>&1; then
+    if [ "{{ .chezmoi.os }}" = "linux" ]; then
+        curl -fsSL https://mise.run | sh
+        export PATH="$HOME/.local/bin:$PATH"
+    else
+        echo "mise was not installed by Homebrew; run chezmoi apply again." >&2
+        exit 1
+    fi
+fi
+
+mise install --yes
+
+while IFS= read -r package; do
+    case "$package" in
+        ''|'#'*) continue ;;
+    esac
+    mise exec -- pi install "$package"
+done < "$HOME/.config/ai-stack/pi-packages.txt"
+
+# Install only plugin code. Its API key, endpoint, model, and microphone choices
+# remain in ~/.pi-web and are intentionally outside chezmoi.
+mise exec -- pi-web-ui install \
+    https://github.com/xing-shuyin/pi-web-ui/tree/v0.94.1/plugins/voice-input \
+    --force

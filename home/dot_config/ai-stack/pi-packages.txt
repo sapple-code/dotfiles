@@ -1,0 +1,5 @@
+# Executable Pi packages. Keep secrets and preferences out of this manifest.
+npm:pi-goal-x@0.31.8
+npm:pi-subagents@0.70.1
+npm:pi-background-tasks@2.6.3
+npm:pi-voice-stt@0.7.0

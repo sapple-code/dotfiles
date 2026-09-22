@@ -1,0 +1,161 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Codex Desktop and scheduled jobs do not necessarily start an interactive
+# shell, so make mise-managed tools available without relying on shell rc files.
+export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+
+usage() {
+  cat <<'EOF'
+Usage:
+  agent-handoff run <pi|omp|codex> [--cwd DIR] [--model MODEL] [--name NAME] [-- PROMPT...]
+  agent-handoff resume <pi|omp|codex> SESSION [--cwd DIR] [--model MODEL] [-- PROMPT...]
+  agent-handoff sessions <pi|omp|codex>
+  agent-handoff import-codex
+  agent-handoff doctor
+
+Prompts may be supplied after -- or on stdin. Stdin is preferred for long or
+sensitive prompts. New and resumed runs persist sessions by default. --name is
+supported by Pi; OMP and Codex generate their own session titles.
+EOF
+}
+
+die() {
+  printf 'agent-handoff: %s\n' "$*" >&2
+  exit 2
+}
+
+require_command() {
+  command -v "$1" >/dev/null 2>&1 || die "required command not found: $1"
+}
+
+list_sessions() {
+  local target=$1 root
+  case "$target" in
+    pi) root="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}/sessions" ;;
+    omp) root="$HOME/.omp/agent/sessions" ;;
+    codex) root="${CODEX_HOME:-$HOME/.codex}/sessions" ;;
+    *) die "unknown target: $target" ;;
+  esac
+
+  if [[ ! -d "$root" ]]; then
+    printf 'No %s session directory at %s\n' "$target" "$root"
+    return 0
+  fi
+
+  find "$root" -type f -name '*.jsonl' -print | LC_ALL=C sort -r
+}
+
+run_harness() {
+  local action=$1 target=$2 session=${3:-}
+  local cwd= model= name=
+  local -a prompt=()
+  shift 3 || true
+
+  while (($#)); do
+    case "$1" in
+      --cwd) (($# >= 2)) || die "--cwd requires a value"; cwd=$2; shift 2 ;;
+      --model) (($# >= 2)) || die "--model requires a value"; model=$2; shift 2 ;;
+      --name) (($# >= 2)) || die "--name requires a value"; name=$2; shift 2 ;;
+      --) shift; prompt=("$@"); break ;;
+      -*) die "unknown option: $1" ;;
+      *) prompt+=("$1"); shift ;;
+    esac
+  done
+
+  if [[ -n "$cwd" ]]; then
+    [[ -d "$cwd" ]] || die "working directory does not exist: $cwd"
+    cd "$cwd"
+  fi
+
+  local depth=${AGENT_HANDOFF_DEPTH:-0}
+  [[ "$depth" =~ ^[0-9]+$ ]] || die "AGENT_HANDOFF_DEPTH must be a non-negative integer"
+  ((depth < 2)) || die "refusing a recursive handoff deeper than two harnesses"
+  export AGENT_HANDOFF_DEPTH=$((depth + 1))
+
+  local -a args=()
+  case "$target" in
+    pi)
+      require_command pi
+      args=(-p)
+      [[ "$action" == resume ]] && args+=(--session "$session")
+      [[ -n "$model" ]] && args+=(--model "$model")
+      [[ -n "$name" ]] && args+=(--name "$name")
+      if ((${#prompt[@]})); then
+        exec pi "${args[@]}" -- "${prompt[@]}"
+      else
+        exec pi "${args[@]}"
+      fi
+      ;;
+    omp)
+      require_command omp
+      [[ -z "$name" ]] || die "--name is only supported by pi"
+      args=(-p)
+      [[ "$action" == resume ]] && args+=(--resume "$session")
+      [[ -n "$cwd" ]] && args+=(--cwd "$cwd")
+      [[ -n "$model" ]] && args+=(--model "$model")
+      if ((${#prompt[@]})); then
+        exec omp "${args[@]}" -- "${prompt[@]}"
+      else
+        exec omp "${args[@]}"
+      fi
+      ;;
+    codex)
+      require_command codex
+      [[ -z "$name" ]] || die "--name is only supported by pi"
+      if [[ "$action" == resume ]]; then
+        args=(exec resume)
+        [[ -n "$model" ]] && args+=(--model "$model")
+        args+=("$session")
+      else
+        args=(exec)
+        [[ -n "$cwd" ]] && args+=(--cd "$cwd")
+        [[ -n "$model" ]] && args+=(--model "$model")
+      fi
+      if ((${#prompt[@]})); then
+        exec codex "${args[@]}" "${prompt[*]}"
+      else
+        exec codex "${args[@]}" -
+      fi
+      ;;
+    *) die "unknown target: $target" ;;
+  esac
+}
+
+command_name=${1:-}
+case "$command_name" in
+  run)
+    (($# >= 2)) || { usage >&2; exit 2; }
+    target=$2
+    shift 2
+    run_harness run "$target" '' "$@"
+    ;;
+  resume)
+    (($# >= 3)) || { usage >&2; exit 2; }
+    target=$2
+    session=$3
+    shift 3
+    run_harness resume "$target" "$session" "$@"
+    ;;
+  sessions)
+    (($# == 2)) || { usage >&2; exit 2; }
+    list_sessions "$2"
+    ;;
+  import-codex)
+    (($# == 1)) || { usage >&2; exit 2; }
+    require_command omp
+    exec omp --from-codex
+    ;;
+  doctor)
+    (($# == 1)) || { usage >&2; exit 2; }
+    for executable in pi omp codex pi-web-ui; do
+      if command -v "$executable" >/dev/null 2>&1; then
+        printf '%-10s %s\n' "$executable" "$(command -v "$executable")"
+      else
+        printf '%-10s missing\n' "$executable"
+      fi
+    done
+    ;;
+  help|-h|--help|'') usage ;;
+  *) die "unknown command: $command_name" ;;
+esac
