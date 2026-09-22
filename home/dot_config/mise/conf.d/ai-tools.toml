@@ -1,5 +1,0 @@
-[tools]
-node = "22.22.2"
-"npm:@earendil-works/pi-coding-agent" = "0.87.1"
-"npm:pi-web-ui" = { version = "0.94.1", allow_builds = ["node-pty"] }
-"github:can1357/oh-my-pi" = "18.2.8"

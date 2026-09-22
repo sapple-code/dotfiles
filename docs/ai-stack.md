@@ -1,6 +1,6 @@
 # AI stack
 
-The shared dotfiles install two complementary terminal agents:
+The shared dotfiles can install two complementary terminal agents:
 
 - **Pi** is the compatibility and mobile-session layer. Its package ecosystem
   supplies `/goal`, subagents, durable background tasks, terminal dictation,
@@ -36,9 +36,19 @@ those profile choices and aliases local rather than committing them here.
 
 ## Install and verify
 
-Apply the dotfiles normally:
+Choose the applications separately on each computer during initialization:
+
+- Pi defaults on.
+- Pi Web UI is offered when Pi is enabled and defaults on.
+- Oh My Pi defaults off and must be explicitly selected after checking local
+  policy. A work machine can therefore install Pi without installing OMP.
+
+To change the choices later, run `chezmoi init --prompt` or edit the three
+`install*` booleans under `[data]` in `~/.config/chezmoi/chezmoi.toml`, then
+apply the dotfiles:
 
 ```sh
+chezmoi init --prompt
 chezmoi apply
 agent-handoff doctor
 pi --version
@@ -46,8 +56,15 @@ omp --version
 pi-web-ui --version
 ```
 
-Chezmoi installs the pinned tools through the managed mise fragment, installs
-the pinned Pi packages, and installs the pinned pi-web-ui voice-input plugin.
+Deselecting an application removes it from the active mise configuration but
+does not erase cached binaries, credentials, settings, or transcripts. If work
+policy requires physical removal, delete the application with `mise uninstall`
+and separately remove its local state only after reviewing what must be kept.
+
+Chezmoi installs only the selected pinned tools through the managed mise
+fragment. When selected, it installs the Pi packages and pi-web-ui voice-input
+plugin as well.
+
 On Debian it bootstraps mise with the official installer when needed. On macOS,
 Homebrew installs mise plus `ffmpeg` for Pi terminal dictation.
 
@@ -106,7 +123,8 @@ and plan/goal primitives out of the box.
 
 Recurring schedule definitions remain local. Use `launchd` on macOS or a user
 systemd timer on Linux to invoke `agent-handoff run pi` or `agent-handoff run
-omp`. This prevents a Nubank schedule from appearing on a personal computer
+omp`; the wrapper supplies the mise shim path even when no interactive shell is
+started. This prevents a Nubank schedule from appearing on a personal computer
 through dotfile sync. Do not install a young third-party scheduler extension
 until its persistence and security model have been reviewed.
 
@@ -132,6 +150,12 @@ and supports multiple background conversations. Start locally with:
 ```sh
 PI_WEB_TOKEN='<local secret>' pi-web-ui --host 127.0.0.1 --port 8787 --cwd "$HOME/dev"
 ```
+
+The pinned pi-web-ui `0.94.1` currently bundles Pi SDK `0.86.1`, while the Pi
+CLI is `0.87.1`. Local server startup, plugin loading, and HTTP delivery are
+verified, but authenticated cross-version session round trips must be rechecked
+after provider login. Keep both versions pinned until pi-web-ui widens its
+declared Pi compatibility range.
 
 Install it as a per-user service only after choosing that machine's workspace,
 token storage, and remote-access policy:

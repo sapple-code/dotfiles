@@ -1,5 +1,18 @@
+{{- $installPi := true -}}
+{{- if hasKey . "installPi" -}}
+{{-   $installPi = .installPi -}}
+{{- end -}}
+{{- $installOhMyPi := false -}}
+{{- if hasKey . "installOhMyPi" -}}
+{{-   $installOhMyPi = .installOhMyPi -}}
+{{- end -}}
 brew "chezmoi"
+{{ if $installPi -}}
+brew "fd"
+{{ end -}}
+{{ if or $installPi $installOhMyPi -}}
 brew "ffmpeg"
+{{ end -}}
 brew "fzf"
 brew "jq"
 brew "mise"

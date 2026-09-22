@@ -1,6 +1,19 @@
+{{- $installPi := true -}}
+{{- if hasKey . "installPi" -}}
+{{-   $installPi = .installPi -}}
+{{- end -}}
+{{- $installOhMyPi := false -}}
+{{- if hasKey . "installOhMyPi" -}}
+{{-   $installOhMyPi = .installOhMyPi -}}
+{{- end -}}
 curl
 emacs
+{{ if $installPi -}}
+fd-find
+{{ end -}}
+{{ if or $installPi $installOhMyPi -}}
 ffmpeg
+{{ end -}}
 fzf
 git
 jq
