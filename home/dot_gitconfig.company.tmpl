@@ -1,0 +1,24 @@
+[user]
+email = spencer.apple@nubank.com.br
+	signingkey = spencer.apple@nubank.com.br
+
+[core]
+	hooksPath = /usr/local/git-dlp/hooks
+
+[includeIf "gitdir:~/dev/"]
+	path = ~/.nugitconfig
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[url "git@github.com:"]
+	insteadOf = git://github.com/
+
+[pull]
+	rebase = false
+
+[commit]
+	gpgsign = true

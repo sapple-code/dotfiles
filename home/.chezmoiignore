@@ -1,5 +1,8 @@
 {{ if not .company -}}
 .zshrc.company.zsh
+.bashrc.company.bash
+.gitconfig.company
+.emacs.d/init-organization.el
 {{ end -}}
 
 {{ if ne .chezmoi.os "darwin" -}}
