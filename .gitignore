@@ -1,2 +1,6 @@
 .DS_Store
 *.elc
+
+# Local-only, org-specific config. Never commit content to these files.
+home/dot_bashrc.company.bash.tmpl
+home/dot_emacs.d/init-organization.el.tmpl

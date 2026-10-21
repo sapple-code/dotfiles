@@ -145,6 +145,9 @@ or the current buffer directory."
 (use-package ws-butler
   :ensure t)
 
+;; Organization-specific overrides (absent on personal machines)
+(load (expand-file-name "init-organization.el" user-emacs-directory) 'noerror 'nomessage)
+
 ;; Custom keybinding
 (use-package general
   :ensure t

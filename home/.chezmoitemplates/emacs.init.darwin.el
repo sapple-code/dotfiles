@@ -444,6 +444,8 @@ apps are not started from a shell."
 ;; END gpt.el
 ;; ******
 
+;; Organization-specific overrides (absent on personal machines)
+(load (expand-file-name "init-organization.el" user-emacs-directory) 'noerror 'nomessage)
 
 
 ;; Custom keybinding
